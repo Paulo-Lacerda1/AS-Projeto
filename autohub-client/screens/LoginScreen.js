@@ -49,7 +49,7 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.link}>Forgot password?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('RegisterOptions')}>
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
 
