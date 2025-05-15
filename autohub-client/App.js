@@ -7,6 +7,7 @@ import RegisterOptionsScreen from './screens/RegisterOptionsScreen';
 import RegisterUserScreen from './screens/RegisterUserScreen';
 import RegisterProviderScreen from './screens/RegisterProviderScreen';
 import EmailConfirmationScreen from './screens/EmailConfirmationScreen';
+import HomeScreen from './screens/HomeScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -36,6 +37,11 @@ export default function App() {
         <Stack.Screen
           name="EmailConfirmation"
           component={EmailConfirmationScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

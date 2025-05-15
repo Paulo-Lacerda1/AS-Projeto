@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function RegisterUserScreen({ navigation }) {
   const [form, setForm] = useState({
     firstName: '',
@@ -17,8 +19,23 @@ export default function RegisterUserScreen({ navigation }) {
     setForm({ ...form, [field]: value });
   };
 
-  const handleSubmit = () => {
-    navigation.navigate('EmailConfirmation');
+  const handleSubmit = async () => {
+    const { email, password } = form;
+
+    if (!email || !password) {
+      alert('Email and password are required');
+      return;
+    }
+
+    try {
+      const userData = JSON.stringify({ email, password });
+      await AsyncStorage.setItem('user', userData);
+      console.log('User data saved successfully:', userData);
+      navigation.navigate('EmailConfirmation');
+    } catch (error) {
+      console.error('Failed to save data.', error);
+      alert('Failed to save data'); 
+    }
   };
 
   return (

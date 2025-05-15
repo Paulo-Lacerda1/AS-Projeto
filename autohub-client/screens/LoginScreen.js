@@ -2,22 +2,37 @@ import { StatusBar } from 'expo-status-bar';
 import {  View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import React, { useState } from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const MOCK_USER = {
   email: 'ana@autohub.com',
   password: '123456'
 };
 
+
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    if (email === MOCK_USER.email && password === MOCK_USER.password) {
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('Erro', 'Email or password is incorrect');
+  // podemos usar o AsyncStorage para armazenar dados localmente ou utilizar o mock
+  const handleLogin = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('user');
+      const user = storedUser ? JSON.parse(storedUser) : null;
+
+      const isMockLogin = email === MOCK_USER.email && password === MOCK_USER.password;
+      const isStoredLogin = user && email === user.email && password === user.password;
+
+      if (isMockLogin || isStoredLogin) {
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Erro', 'Email ou senha inválidos');
+      }
+    } catch (error) {
+      console.error('Erro ao recuperar dados do utilizador.', error);
+      Alert.alert('Erro', 'Falha ao autenticar utilizador');
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
