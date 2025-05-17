@@ -15,7 +15,12 @@ export default function RegisterOptionsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
-      <Text style={styles.title}>Create account</Text>
+       <View style = {styles.headerRow}>
+              <TouchableOpacity onPress = { () => navigation.goBack()} style = {styles.backButton}>
+                <Image source={require('../assets/arrowleft.png')} style={styles.backIcon} />
+              </TouchableOpacity>
+              <Text style={styles.title}>Create account</Text>
+      </View>
       <Text style={styles.subtitle}>Register as</Text>
 
       <Picker
@@ -74,6 +79,14 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold'
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 20
   }
 
 });

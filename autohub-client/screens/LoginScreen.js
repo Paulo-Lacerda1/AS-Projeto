@@ -5,8 +5,8 @@ import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MOCK_USER = {
-  email: 'ana@autohub.com',
-  password: '123456'
+  email: '',
+  password: ''
 };
 
 

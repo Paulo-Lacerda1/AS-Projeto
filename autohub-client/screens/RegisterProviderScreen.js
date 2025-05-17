@@ -23,7 +23,12 @@ export default function RegisterProviderScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
-      <Text style={styles.title}>Create account</Text>
+       <View style = {styles.headerRow}>
+                    <TouchableOpacity onPress = { () => navigation.goBack()} style = {styles.backButton}>
+                      <Image source={require('../assets/arrowleft.png')} style={styles.backIcon} />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Create account</Text>
+            </View>
 
       {['businessName','email','password','confirm','nif','phone','address'].map(field => (
         <TextInput
@@ -81,5 +86,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold'
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 20
   }
 });
