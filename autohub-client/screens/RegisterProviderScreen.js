@@ -59,8 +59,9 @@ const styles = StyleSheet.create({
     width: 180,
     height: 100,
     resizeMode: 'contain',
+    marginTop: 30,
+    marginBottom: 20,
     alignSelf: 'center',
-    marginBottom: 20
   },
   title: {
     fontSize: 22,

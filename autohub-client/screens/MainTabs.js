@@ -1,12 +1,12 @@
 // MainTabs.js
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Image } from 'react-native';   
 
-import HomeScreen from './screens/HomeScreen';
-import SearchScreen from './screens/SearchScreen';
-import InboxScreen from './screens/InboxScreen';
-import MenuScreen from './screens/MenuScreen';
+import HomeScreen from './HomeScreen';
+import SearchScreen from './SearchScreen';
+import InboxScreen from './InboxScreen';
+import MenuScreen from './MenuScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,14 +15,14 @@ export default function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
-          else if (route.name === 'Search') iconName = focused ? 'search' : 'search-outline';
-          else if (route.name === 'Inbox') iconName = focused ? 'chatbox' : 'chatbox-outline';
-          else if (route.name === 'Menu') iconName = focused ? 'menu' : 'menu-outline';
-
-          return <Ionicons name={iconName} size={size} color={color} />;
+        tabBarIcon: ({ focused }) => {
+          let iconSource;
+          if (route.name === 'Home') iconSource = focused ? require('../assets/menu_icons/home_active.png') :  require('../assets/menu_icons/home_inactive.png');
+          else if (route.name === 'Search') iconSource = focused ? require('../assets/menu_icons/search_active.png') :  require('../assets/menu_icons/search_inactive.png');
+          else if (route.name === 'Inbox') iconSource = focused ? require('../assets/menu_icons/inbox_active.png') :  require('../assets/menu_icons/inbox_inactive.png');
+          else if (route.name === 'Menu') iconSource = focused ? require('../assets/menu_icons/menu_active.png') :  require('../assets/menu_icons/menu_inactive.png');
+          
+          return <Image source={iconSource} style={{ width: 24, height: 24 }} />;
         },
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',

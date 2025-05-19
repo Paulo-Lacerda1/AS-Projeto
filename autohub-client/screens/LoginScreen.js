@@ -24,7 +24,7 @@ export default function LoginScreen({ navigation }) {
       const isStoredLogin = user && email === user.email && password === user.password;
 
       if (isMockLogin || isStoredLogin) {
-        navigation.navigate('Home');
+        navigation.navigate('Main', { screen: 'Home' });
       } else {
         Alert.alert('Erro', 'Email ou senha inválidos');
       }
