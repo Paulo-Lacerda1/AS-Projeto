@@ -1,7 +1,7 @@
 // screens/HomeScreen.js
-import { ScrollView, Image, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, Image, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen( {navigation}) {
   return (
     <View style={styles.container}>
         {/* Logotipo */}
@@ -62,10 +62,10 @@ export default function HomeScreen() {
           </View>
           <View style ={styles.sectionContent}>
             <View style={styles.recommendedContainer}>
-              <View style={styles.recommendedCard}>
+              <TouchableOpacity style={styles.recommendedCard} onPress={() => navigation.navigate('ProviderProfile')}>
                 <Image source = {require('../assets/store_logos/thompson.png')} style={styles.offerLogo} />
                 <View style={styles.recommendedTextContainer}>
-                  <Text style={styles.recommendedText}>Northside Auto Repair</Text>
+                  <Text style={styles.recommendedText}>Thompson Car Service</Text>
                   <View style={styles.recommendedTextLine}>
                     <Image source={require('../assets/map_pin.png')} style={styles.icon} />
                     <Text style={styles.distanceText}>2.1 km away</Text>
@@ -75,7 +75,7 @@ export default function HomeScreen() {
                     <Text style={styles.distanceText}>4.5</Text>
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
               <View style={styles.recommendedCard}>
                 <Image source = {require('../assets/store_logos/RiverStone.png')} style={styles.offerLogo} />
                 <View style={styles.recommendedTextContainer}>

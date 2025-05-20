@@ -1,8 +1,36 @@
 // screens/SearchScreen.js
-import React from 'react';
+import React , {useState} from 'react';
 import { View, Text, StyleSheet, TextInput, Image, ScrollView, TouchableOpacity } from 'react-native';
 
-export default function SearchScreen( {navigation }) {
+export default function SearchScreen({ navigation }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilters, setActiveFilters] = useState(['Services', 'Workshops']);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const toggleFilter = (filter) => {
+    setActiveFilters(prev =>
+      prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
+    );
+  };
+
+  // mock data
+  const allServices = ["Car Wash", "Interior Cleaning", "Full Wash", "Waxing"];
+  const allWorkshops = [
+    { name: "Thompson Car Service", distance: "2.1 km", rating: 4.5, logo: require('../assets/store_logos/thompson.png') },
+    { name: "Prime Car Service Center", distance: "4.3 km", rating: 4.1, logo: require('../assets/store_logos/prime.png') },
+    { name: "Urban Car Services", distance: "6.8 km", rating: 4.6, logo: require('../assets/store_logos/urban.png') }
+  ];
+
+  const filteredServices = allServices.filter(service =>
+    activeFilters.includes('Services') &&
+    service.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredWorkshops = allWorkshops.filter(workshop =>
+    activeFilters.includes('Workshops') &&
+    workshop.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
@@ -12,54 +40,123 @@ export default function SearchScreen( {navigation }) {
         <TextInput
           placeholder="What are you looking for?"
           style={styles.searchInput}
+          value={searchTerm}
+          onChangeText={text => setSearchTerm(text)}
         />
-        <Image source={require('../assets/filter.png')} style={styles.filterIcon} />
+        <TouchableOpacity onPress={() => setShowFilters(prev => !prev)}>
+          <Image source={require('../assets/filter.png')} style={styles.filterIcon} />
+        </TouchableOpacity>
       </View>
 
-      {/* Recently Searched */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recently Searched</Text>
-        <Text style={styles.secondaryText}>
-          You haven't searched for anything yet.{"\n"}Start exploring services or workshops now!
-        </Text>
-      </View>
-
-      {/* Popular Services */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Popular Services</Text>
-        <View style={styles.grid}>
-          <Text style={styles.gridItem}>Car Wash</Text>
-          <Text style={styles.gridItem}>Brake Replacement</Text>
-          <Text style={styles.gridItem}>Oil Change</Text>
-          <Text style={styles.gridItem}>Battery Change</Text>
-          <Text style={styles.gridItem}>Full Inspection</Text>
-          <Text style={styles.gridItem}>Tire Rotation</Text>
+      {/* Filtros visíveis apenas com pesquisa */}
+      {searchTerm !== '' && showFilters && (
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+          {['Services', 'Workshops', 'Near me'].map(filter => (
+            <TouchableOpacity
+              key={filter}
+              onPress={() => toggleFilter(filter)}
+              style={{
+                backgroundColor: activeFilters.includes(filter) ? '#ddd' : '#fff',
+                borderColor: '#ccc',
+                borderWidth: 1,
+                borderRadius: 20,
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                marginRight: 8,
+                marginTop: 5,
+              }}
+            >
+              <Text>{filter}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-      </View>
+      )}
 
-      {/* Recommended for you */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recommended for you</Text>
-        
-        <Text style={styles.subSectionTitle}>Services</Text>
-        <View style={styles.row}>
-          <Text style={styles.serviceItem}>Wheel Alignment</Text>
-          <Text style={styles.serviceItem}>Battery Check</Text>
-        </View>
+      {searchTerm === '' ? (
+        <>
+          {/* Recently Searched */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recently Searched</Text>
+            <Text style={styles.secondaryText}>
+              You haven't searched for anything yet.{"\n"}Start exploring services or workshops now!
+            </Text>
+          </View>
 
-        <Text style={styles.subSectionTitle}>Workshops</Text>
-        <View style={styles.recommendCard}>
-          <TouchableOpacity style={styles.recommendCard} onPress={() => navigation.navigate('ProviderProfile')}>
-            <Image source={require('../assets/store_logos/thompson.png')} style={styles.storeLogo} />
-            <Text style={styles.recommendText}>Thompson Car Service</Text>
-          </TouchableOpacity>
+          {/* Popular Services */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Popular Services</Text>
+            <View style={styles.grid}>
+              {allServices.map((service, index) => (
+                <Text key={index} style={styles.gridItem}>{service}</Text>
+              ))}
+            </View>
+          </View>
 
-        </View>
-        <View style={styles.recommendCard}>
-          <Image source={require('../assets/store_logos/RiverStone.png')} style={styles.storeLogo} />
-          <Text style={styles.recommendText}>Riverstone Automotive</Text>
-        </View>
-      </View>
+          {/* Recommended for you */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recommended for you</Text>
+
+            <Text style={styles.subSectionTitle}>Services</Text>
+            <View style={styles.row}>
+              <Text style={styles.serviceItem}>Wheel Alignment</Text>
+              <Text style={styles.serviceItem}>Battery Check</Text>
+            </View>
+
+            <Text style={styles.subSectionTitle}>Workshops</Text>
+            <View style={styles.recommendCard}>
+              <TouchableOpacity style={styles.recommendCard} onPress={() => navigation.navigate('ProviderProfile')}>
+                <Image source={require('../assets/store_logos/thompson.png')} style={styles.storeLogo} />
+                <Text style={styles.recommendText}>Thompson Car Service</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.recommendCard}>
+              <Image source={require('../assets/store_logos/RiverStone.png')} style={styles.storeLogo} />
+              <Text style={styles.recommendText}>Riverstone Automotive</Text>
+            </View>
+          </View>
+        </>
+      ) : (
+        <>
+          {/* Searching Results */}
+
+          {filteredServices.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Services</Text>
+              {filteredServices.map((service, index) => (
+                <Text key={index} style={styles.gridItem}>{service}</Text>
+              ))}
+            </View>
+          )}
+
+          {filteredWorkshops.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Workshops</Text>
+              {filteredWorkshops.map((shop, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.recommendCard}
+                  onPress={() => {
+                    if (shop.name === 'Thompson Car Service') {
+                      navigation.navigate('ProviderProfile');
+                    }
+                  }}
+                >
+                  <Image source={shop.logo} style={styles.storeLogo} />
+                  <View>
+                    <Text style={styles.recommendText}>{shop.name}</Text>
+                    <Text style={{ fontSize: 12, color: '#666' }}>{shop.distance} away</Text>
+                    <Text style={{ fontSize: 12 }}>⭐ {shop.rating}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          {filteredServices.length === 0 && filteredWorkshops.length === 0 && (
+            <Text style={styles.secondaryText}>No results found.</Text>
+          )}
+        </>
+      )}
     </ScrollView>
   );
 }

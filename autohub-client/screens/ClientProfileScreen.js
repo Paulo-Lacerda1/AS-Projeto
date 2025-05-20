@@ -1,24 +1,44 @@
-// screens/ClientProfileScreen.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ClientProfileScreen({ navigation }) {
-  const profile = {
-    initials: 'MS',
-    firstName: 'Maria',
-    lastName: 'Santos',
-    nif: '123456789',
-    email: 'mariasantos@gmail.com',
-    address: 'Rua Direita, 123, Aveiro',
-  };
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('session'); // <- aqui
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          setProfile(parsedData);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar os dados do utilizador', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+
+  if (!profile) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ padding: 20 }}>Loading profile...</Text>
+      </View>
+    );
+  }
+
+  // Geração de iniciais para o círculo
+  const initials = (profile.firstName[0] + (profile.lastName?.[0] || '')).toUpperCase();
 
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
 
       <View style={styles.header}>
-        <TouchableOpacity onPress = { () => navigation.goBack()} style = {styles.navIcon}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.navIcon}>
           <Image source={require('../assets/arrowleft.png')} style={styles.backIcon} />
         </TouchableOpacity>
         <TouchableOpacity>
@@ -28,8 +48,9 @@ export default function ClientProfileScreen({ navigation }) {
 
       <View style={styles.profile}>
         <View style={styles.initialsCircle}>
-          <Text style={styles.initials}>{profile.initials}</Text>
+          <Text style={styles.initials}>{initials}</Text>
         </View>
+
         <Text style={styles.label}>First Name</Text>
         <Text style={styles.value}>{profile.firstName}</Text>
 
@@ -38,6 +59,9 @@ export default function ClientProfileScreen({ navigation }) {
 
         <Text style={styles.label}>NIF</Text>
         <Text style={styles.value}>{profile.nif}</Text>
+
+        <Text style={styles.label}>Phone</Text>
+        <Text style={styles.value}>{profile.phone}</Text>
 
         <Text style={styles.label}>Email</Text>
         <Text style={styles.value}>{profile.email}</Text>
@@ -68,6 +92,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   navIcon: {
+    width: 20,
+    height: 20,
+  },
+  backIcon: {
     width: 20,
     height: 20,
   },

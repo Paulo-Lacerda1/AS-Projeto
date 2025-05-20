@@ -20,23 +20,37 @@ export default function RegisterUserScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    const { email, password } = form;
+    // Verifica se todos os campos (exceto address) foram preenchidos
+    const requiredFields = ['firstName', 'lastName', 'email', 'password', 'confirm', 'nif', 'phone'];
+    for (let field of requiredFields) {
+      if (!form[field]) {
+        alert(`Please fill in the ${field}`);
+        return;
+      }
+    }
 
-    if (!email || !password) {
-      alert('Email and password are required');
+    // Confirma se as passwords coincidem
+    if (form.password !== form.confirm) {
+      alert("Passwords do not match");
       return;
     }
 
+    // Substitui address vazio por "No address"
+    const finalForm = {
+      ...form,
+      address: form.address?.trim() || 'No address'
+    };
+
     try {
-      const userData = JSON.stringify({ email, password });
-      await AsyncStorage.setItem('user', userData);
-      console.log('User data saved successfully:', userData);
+      await AsyncStorage.setItem('user', JSON.stringify(finalForm));
+      console.log('User data saved successfully:', finalForm);
       navigation.navigate('EmailConfirmation');
     } catch (error) {
       console.error('Failed to save data.', error);
       alert('Failed to save data'); 
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -52,7 +66,7 @@ export default function RegisterUserScreen({ navigation }) {
           key={field}
           style={styles.input}
           placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-          secureTextEntry={field.includes('password')}
+          secureTextEntry={field.includes('password') || field.includes("confirm")}
           onChangeText={text => handleChange(field, text)}
         />
       ))}
