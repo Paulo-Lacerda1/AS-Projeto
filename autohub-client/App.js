@@ -8,6 +8,10 @@ import RegisterUserScreen from './screens/RegisterUserScreen';
 import RegisterProviderScreen from './screens/RegisterProviderScreen';
 import EmailConfirmationScreen from './screens/EmailConfirmationScreen';
 import HomeScreen from './screens/HomeScreen';
+import ServiceDetailScreen from './screens/ServiceDetailScreen';
+import BookingScreen from './screens/BookingScreen';
+import BookingSummaryScreen from './screens/BookingSummaryScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -44,6 +48,24 @@ export default function App() {
           component={HomeScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="ServiceDetail"
+          component={ServiceDetailScreen}
+          options={{ headerShown: true, title: "Service Details" }}
+        />
+        <Stack.Screen
+          name="BookingScreen"
+          component={BookingScreen}
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="BookingSummaryScreen"
+          component={BookingSummaryScreen}
+          options={{ title: 'Resumo' }} 
+        />
+
+
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
