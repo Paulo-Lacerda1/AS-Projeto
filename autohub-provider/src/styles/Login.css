@@ -51,7 +51,7 @@
 }
 
 .login-box button:hover {
-  background-color: #333;
+  background-color: #3a3a3a;
 }
 
 .links-container {
@@ -66,3 +66,24 @@
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
+.avaliacao-card {
+  width: 100%;
+  max-width: 200px;
+  height: 100px;
+  background-color: #000000;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 2rem auto 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.avaliacao-card:hover {
+  background-color: #3a3a3a;
+}
+
