@@ -8,9 +8,17 @@ import RegisterOptionsScreen from './screens/RegisterOptionsScreen';
 import RegisterUserScreen from './screens/RegisterUserScreen';
 import RegisterProviderScreen from './screens/RegisterProviderScreen';
 import EmailConfirmationScreen from './screens/EmailConfirmationScreen';
+
 import MainTabs from './screens/MainTabs';
 import ClientProfileScreen from './screens/ClientProfileScreen';
 import ProviderProfileScreen from './screens/ProviderProfileScreen';
+
+import HomeScreen from './screens/HomeScreen';
+import ServiceDetailScreen from './screens/ServiceDetailScreen';
+import BookingScreen from './screens/BookingScreen';
+import BookingSummaryScreen from './screens/BookingSummaryScreen';
+import BookingDetailsScreen from './screens/BookingDetailsScreen';
+import ReviewScreen from './screens/ReviewScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,10 +31,17 @@ export default function App() {
         <Stack.Screen name="RegisterUser" component={RegisterUserScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterProvider" component={RegisterProviderScreen} options={{ headerShown: false }} />
         <Stack.Screen name="EmailConfirmation" component={EmailConfirmationScreen} options={{ headerShown: false }} />
-        
+
         <Stack.Screen name="ClientProfile" component={ClientProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProviderProfile" component={ProviderProfileScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} options={{ headerShown: true, title: "Service Details" }} />
+        <Stack.Screen name="BookingScreen" component={BookingScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BookingSummaryScreen" component={BookingSummaryScreen} options={{ title: 'Resumo' }} />
+        <Stack.Screen name="BookingDetailsScreen" component={BookingDetailsScreen} />
+        <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
