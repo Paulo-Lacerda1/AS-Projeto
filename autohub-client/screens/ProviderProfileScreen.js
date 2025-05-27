@@ -1,41 +1,91 @@
 // screens/ProfileScreen.js
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ProviderProfileScreen( { navigation}) {
-  const provider = [
-    {name: 'Thompson Car Service', rating: 4.5, reviews: 87, address: 'Avenida Exemplo, 123', openHours: 'Mon-Fri 08:00–18:00 | Sat 10:00–14:00'},
-  ];
+export default function ProviderProfileScreen({ navigation }) {
+  const [reviews, setReviews] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(3);
+
+  const [averageRating, setAverageRating] = useState(0);
+  const [reviewsCount, setReviewsCount] = useState(0);
+
+  useEffect(() => {
+    if (reviews.length > 0) {
+      const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+      const avg = total / reviews.length;
+      setAverageRating(avg.toFixed(1));
+      setReviewsCount(reviews.length);
+    } else {
+      setAverageRating(0);
+      setReviewsCount(0);
+    }
+  }, [reviews]);
+
+
+  const provider = {
+    name: 'Thompson Car Service',
+    address: 'Avenida Exemplo, 123',
+    openHours: 'Mon-Fri 08:00–18:00 | Sat 10:00–14:00',
+  };
+
   const services = [
-    { id: 1, name: 'Oil Change', price: '50€', description: 'Complete engine oil replacement', image: require('../assets/profile/oil_change.png') },
-    { id: 2, name: 'Premium Exterior Clean', price: '70€', description: 'A detailed hand wash', image: require('../assets/profile/exterior_clean.png') },
-  ];
-
-  const reviews = [
     {
       id: 1,
-      rating: 5,
-      title: 'Amazing service',
-      text: 'I tried the Premium Exterior Clean and loved it! Customer service was 10/10. Highly recommend!',
-      user: 'Sofia R.',
-      date: 'March 2025',
+      name: 'Oil Change',
+      price: 50,
+      description: 'Complete engine oil replacement',
+      image: require('../assets/profile/oil_change.png'),
+      extras: [
+        { label: 'Interior Cleaning', price: 10 },
+        { label: 'Wax Finish', price: 5 },
+        { label: 'Wheel Detailing', price: 6 },
+      ],
     },
     {
       id: 2,
-      rating: 5,
-      title: 'Fast oil change and fair price',
-      text: 'Booked an appointment and was out in 30 minutes. Good value. Will book again.',
-      user: 'Miguel T.',
-      date: 'March 2025',
+      name: 'Premium Exterior Clean',
+      price: 70,
+      description: 'A detailed hand wash',
+      image: require('../assets/profile/exterior_clean.png'),
+      extras: [
+        { label: 'Interior Cleaning', price: 10 },
+        { label: 'Wax Finish', price: 5 },
+        { label: 'Wheel Detailing', price: 6 },
+      ],
     },
   ];
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const stored = await AsyncStorage.getItem('bookings');
+        const all = stored ? JSON.parse(stored) : [];
+        const filtered = all
+          .filter(b => b.completed && b.review && b.store === provider.name)
+          .map(b => ({
+            ...b.review,
+            id: b.review.id || b.date + b.title,
+          }))
+          .sort((a, b) => b.id - a.id);
+
+        setReviews(filtered);
+      } catch (e) {
+        console.error('Failed to load reviews', e);
+        Alert.alert('Error', 'Could not load reviews.');
+      }
+    };
+
+    const unsubscribe = navigation.addListener('focus', fetchReviews);
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
-      
-      <TouchableOpacity onPress = { () => navigation.goBack()} style = {styles.navIcon}>
+
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.navIcon}>
         <Image source={require('../assets/arrowleft.png')} style={styles.backIcon} />
       </TouchableOpacity>
 
@@ -43,48 +93,71 @@ export default function ProviderProfileScreen( { navigation}) {
       <View style={styles.headerSection}>
         <Image source={require('../assets/store_logos/thompson.png')} style={styles.storeLogo} />
         <View style={styles.headerText}>
-          <Text style={styles.storeName}>{provider[0].name}</Text>
-          <Text style={styles.rating}>⭐ {provider[0].rating} ({provider[0].reviews} reviews)</Text>
-          <Text style={styles.details}>Address: {provider[0].address}</Text>
-          <Text style={styles.details}>Open: {provider[0].openHours}</Text>
+          <Text style={styles.storeName}>{provider.name}</Text>
+          <Text style={styles.rating}>⭐ {averageRating} ({reviewsCount} reviews)</Text>
+          <Text style={styles.details}>Address: {provider.address}</Text>
+          <Text style={styles.details}>Open: {provider.openHours}</Text>
         </View>
       </View>
 
       {/* Popular */}
       <Text style={styles.sectionTitle}>Most popular</Text>
-      <Image source={require('../assets/profile/exterior_clean.png')} style={styles.popularImage} />
-      <Text style={styles.serviceName}>Premium Exterior Clean</Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('BookingScreen', {
+          service: services[1],
+          store: provider.name,
+        })}
+      >
+        <Image source={services[1].image} style={styles.popularImage} />
+        <Text style={styles.serviceName}>{services[1].name}</Text>
+      </TouchableOpacity>
 
       {/* Services */}
       <Text style={styles.sectionTitle}>Services</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.servicesScroll}>
         {services.map(service => (
-          <View key={service.id} style={styles.serviceCard}>
+          <TouchableOpacity
+            key={service.id}
+            style={styles.serviceCard}
+            onPress={() =>
+              navigation.navigate('BookingScreen', {
+                service,
+                store: 'Thompson Car Service',
+              })
+            }
+          >
             <Image source={service.image} style={styles.serviceImage} />
             <Text style={styles.serviceName}>{service.name}</Text>
-            <Text style={styles.servicePrice}>{service.price}</Text>
+            <Text style={styles.servicePrice}>{service.price}€</Text>
             <Text style={styles.serviceDescription}>{service.description}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
       {/* Reviews */}
       <Text style={styles.sectionTitle}>Latest reviews</Text>
-      {reviews.map(review => (
-        <View key={review.id} style={styles.reviewCard}>
-          <Text style={styles.reviewRating}>⭐ {review.rating}</Text>
-          <Text style={styles.reviewTitle}>{review.title}</Text>
-          <Text style={styles.reviewText}>{review.text}</Text>
-          <Text style={styles.reviewMeta}>{review.user} · {review.date}</Text>
-        </View>
-      ))}
+      {reviews.length === 0 ? (
+        <Text style={{ fontStyle: 'italic', color: '#777', marginBottom: 20 }}>No reviews yet.</Text>
+      ) : (
+        reviews.slice(0, visibleCount).map(review => (
+          <View key={review.id} style={styles.reviewCard}>
+            <Text style={styles.reviewRating}>⭐ {review.rating}</Text>
+            <Text style={styles.reviewTitle}>{review.title || 'Review'}</Text>
+            <Text style={styles.reviewText}>{review.text}</Text>
+            <Text style={styles.reviewMeta}>{review.user} · {review.date}</Text>
+          </View>
+        ))
+      )}
 
-      <TouchableOpacity>
-        <Text style={styles.seeMore}>See more</Text>
-      </TouchableOpacity>
+      {visibleCount < reviews.length && (
+        <TouchableOpacity onPress={() => setVisibleCount(prev => prev + 3)}>
+          <Text style={styles.seeMore}>See more</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -191,7 +264,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     marginBottom: 30,
   },
-  navIcon:{
+  navIcon: {
     marginBottom: 20,
   }
 });

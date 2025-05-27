@@ -14,11 +14,13 @@ import ClientProfileScreen from './screens/ClientProfileScreen';
 import ProviderProfileScreen from './screens/ProviderProfileScreen';
 
 import HomeScreen from './screens/HomeScreen';
-import ServiceDetailScreen from './screens/ServiceDetailScreen';
 import BookingScreen from './screens/BookingScreen';
 import BookingSummaryScreen from './screens/BookingSummaryScreen';
 import BookingDetailsScreen from './screens/BookingDetailsScreen';
+import CancelConfirmationScreen from './screens/CancelConfirmationScreen';
+import CompleteScreen from './screens/CompleteScreen';
 import ReviewScreen from './screens/ReviewScreen';
+import HistoricScreen from './screens/HistoricScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,11 +39,14 @@ export default function App() {
         <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
 
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} options={{ headerShown: true, title: "Service Details" }} />
         <Stack.Screen name="BookingScreen" component={BookingScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BookingSummaryScreen" component={BookingSummaryScreen} options={{ title: 'Resumo' }} />
-        <Stack.Screen name="BookingDetailsScreen" component={BookingDetailsScreen} />
-        <Stack.Screen name="ReviewScreen" component={ReviewScreen} />
+        <Stack.Screen name="BookingSummaryScreen" component={BookingSummaryScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="BookingDetailsScreen" component={BookingDetailsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CancelConfirmationScreen" component={CancelConfirmationScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="CompleteScreen" component={CompleteScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="ReviewScreen" component={ReviewScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Historic" component={HistoricScreen} options={{ headerShown: false }} />
+
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>

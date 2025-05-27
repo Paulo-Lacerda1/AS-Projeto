@@ -4,19 +4,8 @@ import { ScrollView, Image, View, Text, StyleSheet, FlatList, TouchableOpacity }
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Ionicons } from '@expo/vector-icons';
-
 export default function HomeScreen() {
   const navigation = useNavigation();
-
-  const goToDetail = (title, store, description, image) => {
-    navigation.navigate('ServiceDetail', {
-      title,
-      store,
-      description,
-      image,w
-    });
-  };
 
   const [bookings, setBookings] = useState([]);
 
@@ -46,21 +35,14 @@ export default function HomeScreen() {
       <TouchableOpacity
         style={styles.bookingCard}
         onPress={() =>
-          navigation.navigate('BookingDetailsScreen', { booking: item, index })
+          navigation.navigate('BookingDetailsScreen', { booking: item })
         }
       >
         <Text style={styles.bookingTitle}>{item.title} - {item.store}</Text>
         <Text style={styles.bookingDate}>
-          {new Date(item.date).toLocaleDateString()} às{' '}
+          {new Date(item.date).toLocaleDateString()} às{' '}h
           {new Date(item.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.checkButton}
-        onPress={() => navigation.navigate('ReviewScreen', { store: item.store })}
-      >
-        <Ionicons name="checkmark-circle" size={28} color="#4CAF50" />
       </TouchableOpacity>
     </View>
   );
@@ -69,31 +51,37 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
+
         {/* Scheduled services */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Image source={require('../assets/Calendar.png')} style={styles.icon} />
-            <Text style={styles.sectionTitle}>Scheduled services</Text>
+            <Text style={styles.sectionTitle}>Scheduled Services</Text>
             <Text style={styles.dots}>•••</Text>
           </View>
-
           <View style={styles.sectionContent}>
             {bookings.length === 0 ? (
-              <>
-                <Text style={styles.noServices}>You have no upcoming services.</Text>
-                <View style={styles.searchContainer}>
-                  <Image source={require('../assets/Search_grey.png')} style={styles.icon} />
-                  <Text style={styles.searchText}>Search service</Text>
-                </View>
-              </>
+              <View style={[styles.sectionContent, { alignItems: 'center' }]}>
+                <>
+                  <Text style={styles.noServices}>You have no upcoming services.</Text>
+                  <View style={styles.searchContainer}>
+                    <Image source={require('../assets/Search_grey.png')} style={styles.icon} />
+                    <Text style={styles.searchText}>Search service</Text>
+                  </View>
+                </>
+              </View>
             ) : (
-              <FlatList
-                data={bookings}
-                keyExtractor={(_, index) => index.toString()}
-                renderItem={renderBooking}
-              />
+              <View style={{ alignItems: 'center' }}>
+                <FlatList
+                  data={bookings}
+                  keyExtractor={(_, i) => i.toString()}
+                  renderItem={renderBooking}
+                  contentContainerStyle={{ width: '100%' }}
+                />
+              </View>
             )}
           </View>
+
           <Image source={require('../assets/chevron_down.png')} style={styles.chevronIcon} />
         </View>
 
@@ -105,48 +93,29 @@ export default function HomeScreen() {
             <Text style={styles.dots}>•••</Text>
           </View>
           <View style={styles.sectionContent}>
-            <View style={styles.offersContainer}>
-              <TouchableOpacity
-                onPress={() =>
-                  goToDetail(
-                    "20% OFF on inspections",
-                    "Northside Auto Repair",
-                    "Get your vehicle inspected by certified mechanics with a 20% discount. Ensure your car is in top condition before your next trip.",
-                    require('../assets/store_logos/Northside.png')
-                  )
-                }
-              >
-                <View style={styles.offerCard}>
-                  <Image source={require('../assets/store_logos/Northside.png')} style={styles.offerLogo} />
-                  <View style={styles.offerTextContainer}>
-                    <Text style={styles.offerText}>20% OFF on inspections until April 20!</Text>
-                    <Text style={styles.offerStore}>Northside Auto Repair</Text>
-                  </View>
+            <View style={styles.recommendedContainer}>
+              {/* Oferta 1 */}
+              <TouchableOpacity style={styles.recommendedCard} onPress={() => navigation.navigate('ProviderProfile')}>
+                <Image source={require('../assets/store_logos/Northside.png')} style={styles.offerLogo} />
+                <View style={styles.recommendedTextContainer}>
+                  <Text style={styles.recommendedText}>20% OFF on inspections until April 20!</Text>
+                  <Text style={styles.distanceText}>Northside Auto Repair</Text>
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() =>
-                  goToDetail(
-                    "15% OFF on oil changes",
-                    "Riverstone Automotive",
-                    "Take advantage of 15% off on premium oil changes. Keep your engine healthy and running smoothly with expert service.",
-                    require('../assets/store_logos/RiverStone.png')
-                  )
-                }
-              >
-                <View style={styles.offerCard}>
-                  <Image source={require('../assets/store_logos/RiverStone.png')} style={styles.offerLogo} />
-                  <View style={styles.offerTextContainer}>
-                    <Text style={styles.offerText}>15% OFF on oil changes until April 25!</Text>
-                    <Text style={styles.offerStore}>Riverstone Automotive</Text>
-                  </View>
+              {/* Oferta 2 */}
+              <View style={styles.recommendedCard}>
+                <Image source={require('../assets/store_logos/RiverStone.png')} style={styles.offerLogo} />
+                <View style={styles.recommendedTextContainer}>
+                  <Text style={styles.recommendedText}>15% OFF on oil changes until April 25!</Text>
+                  <Text style={styles.distanceText}>Riverstone Automotive</Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             </View>
           </View>
           <Image source={require('../assets/chevron_down.png')} style={styles.chevronIcon} />
         </View>
+
 
         {/* Recommended near you */}
         <View style={styles.section}>
@@ -229,6 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     padding: 20,
+    marginTop: 5,
   },
   servicesContainer: {
     backgroundColor: '#fff',
@@ -276,9 +246,13 @@ const styles = StyleSheet.create({
   recommendedCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 5,
     width: '100%',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
   },
+
   recommendedTextContainer: {
     flex: 1,
     flexDirection: 'column',
