@@ -1,0 +1,18 @@
+[
+  {
+    "date": "26/06",
+    "time": "09h00",
+    "title": "Premium Exterior Clean",
+    "client": "Sofia R.",
+    "vehicle": "Small",
+    "extras": "Wax Finish"
+  },
+  {
+    "date": "27/06",
+    "time": "14h30",
+    "title": "Oil Change",
+    "client": "João M.",
+    "vehicle": "Sedan",
+    "extras": "None"
+  }
+]

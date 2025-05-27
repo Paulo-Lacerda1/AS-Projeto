@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Premium Exterior Clean",
+    "price": "From €18",
+    "duration": "25-35 min",
+    "details": "Extras"
+  },
+  {
+    "title": "Oil Change",
+    "price": "From €30",
+    "duration": "20–30 min",
+    "details": "Includes oil and filter replacement"
+  },
+  {
+    "title": "bater uma",
+    "price": "From €5",
+    "duration": "1–10 min",
+    "details": "Includes baby oil and sloppy toppy"
+  }
+]
