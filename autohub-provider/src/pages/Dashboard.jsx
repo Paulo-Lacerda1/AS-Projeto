@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import '../styles/Dashboard.css';
 
 export default function Dashboard() {
@@ -8,6 +9,10 @@ export default function Dashboard() {
     const [appointments, setAppointments] = useState([]);
     const [services, setServices] = useState([]);
     const [stats, setStats] = useState({ total: 0, earnings: 0, rating: 0 });
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [serviceEditing, setServiceEditing] = useState(null);
+    const [editService, setEditService] = useState(null);
 
     useEffect(() => {
         fetch(`/data/${company}/appointments.json`).then(res => res.json()).then(setAppointments);
@@ -37,22 +42,55 @@ export default function Dashboard() {
         return stars;
     }
 
+    function openModal(service) {
+        setServiceEditing(service);
+        setEditService(service);
+        setModalOpen(true);
+    }
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        setEditService(prev => ({ ...prev, [name]: value }));
+    }
+
+    function saveChanges() {
+        setServices(prevServices =>
+            prevServices.map(s =>
+                s.title === serviceEditing.title ? editService : s
+            )
+        );
+
+        closeModal();
+    }
+
+    function closeModal() {
+        setModalOpen(false);
+        setServiceEditing(null);
+    }
+
     return (
         <div>
             <div className="top-bar">
                 <div className="logo-area">
-                    <img src="/src/assets/logo_transparente.png" alt="AutoHub Logo" className='autohub-logo' />
+                    <Link to="/">
+                        <img 
+                            src="/src/assets/logo_transparente.png" 
+                            alt="AutoHub Logo" 
+                            className="autohub-logo" />
+                    </Link>
                 </div>
                 <div className="company-info">
                     <div className="company-text">
                         <span className="company-name">{company} Car Service</span>
                         <div className="stars">{renderStars(stats.stars)}</div>
                     </div>
-                    <img
-                        src={`/data/${company}/logo.png`}
-                        alt={`${company} Logo`}
-                        className="company-logo"
-                    />
+                    <Link to={`/dashboard/${company}`}>
+                        <img
+                            src={`/data/${company}/logo.png`}
+                            alt={`${company} Logo`}
+                            className="company-logo"
+                        />
+                    </Link>
                 </div>
             </div>
 
@@ -60,18 +98,18 @@ export default function Dashboard() {
                 <section className="appointments-section">
                     <header className="dashboard-header">
                         <h1>Upcoming Appointments</h1>
-                        <a href="#" className='see-all-link'>See all</a>
+                        <Link to={`/service_management/${company}`}><button className='see-all-link' style={{ backgroundColor: 'white', border: '0px', cursor: 'pointer' }}>See all</button></Link>
                     </header>
 
                     {appointments.map((a, i) => (
                     <div key={i} className="appointment-card">
-                        <h2>{a.date} · {a.time} – {a.title}</h2>
+                        <h2>{a.date} · {a.time} - {a.title}</h2>
                         <ul>
-                        <li>Client: {a.client}</li>
-                        <li>Vehicle Type: {a.vehicle}</li>
-                        <li>Extras: {a.extras}</li>
+                            <li>Client: {a.client}</li>
+                            <li>Vehicle Type: {a.vehicle}</li>
+                            <li>Extras: {a.extras}</li>
                         </ul>
-                        <button>See more</button>
+                        <Link to={`/service_management/${company}`}><button>See more</button></Link>
                     </div>
                     ))}
                 </section>
@@ -89,11 +127,11 @@ export default function Dashboard() {
                             <p>Earnings</p>
                             <p className="stat-value">€{stats.earnings}</p>
                         </div>
-                        <div className="stat-box">
-                            <p><FaRegStar></FaRegStar></p>
-                            <p>Average Rating</p>
-                            <p className="stat-value">{stats.rating}</p>
-                        </div>
+                        <Link to={`/avaliacao`} className="stat-box-star">
+                                <p><FaRegStar></FaRegStar></p>
+                                <p>Average Rating</p>
+                                <p className="stat-value">{stats.rating}</p>
+                        </Link>
                     </div>
                 </section>
 
@@ -102,7 +140,9 @@ export default function Dashboard() {
                     <div className="services-grid">
                     {services.map((s, i) => (
                         <div key={i} className="service-card">
-                            <div className='service-icon'><span className='material-icons-round'>open_in_new</span></div>
+                            <button className='service-icon' onClick={() => openModal(s)}>
+                                <span className='material-icons-round'>open_in_new</span>
+                            </button>
                             <div>
                                 <h3>{s.title}</h3>
                                 <ul>
@@ -116,6 +156,52 @@ export default function Dashboard() {
                     </div>
                 </section>
             </div>
+
+            {modalOpen && (
+                <div className='modal-overlay' onClick={closeModal}>
+                    <div className='modal-content' onClick={e => e.stopPropagation()}>
+                        <h2>Edit Service</h2>
+                        <label>
+                            Title:
+                            <input
+                                type="text"
+                                name="title"
+                                value={editService.title}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label>
+                            Price:
+                            <input
+                                type="text"
+                                name="price"
+                                value={editService.price}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label>
+                            Duration:
+                            <input
+                                type="text"
+                                name="duration"
+                                value={editService.duration}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <label>
+                            Details:
+                            <input
+                                type="text"
+                                name="details"
+                                value={editService.details}
+                                onChange={handleChange}
+                            />
+                        </label>
+                        <button onClick={saveChanges}>Save</button>
+                        <button onClick={closeModal}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,6 +1,6 @@
 [
   {
-    "date": "26/06",
+    "date": "2025-06-26",
     "time": "09h00",
     "title": "Premium Exterior Clean",
     "client": "Sofia R.",
@@ -8,7 +8,31 @@
     "extras": "Wax Finish"
   },
   {
-    "date": "27/06",
+    "date": "2025-06-26",
+    "time": "14h30",
+    "title": "bater uma",
+    "client": "João M.",
+    "vehicle": "Sedan",
+    "extras": "None"
+  },
+  {
+    "date": "2025-06-26",
+    "time": "14h30",
+    "title": "Oil Change",
+    "client": "João M.",
+    "vehicle": "Sedan",
+    "extras": "None"
+  },
+  {
+    "date": "2025-06-26",
+    "time": "14h30",
+    "title": "Oil Change",
+    "client": "João M.",
+    "vehicle": "Sedan",
+    "extras": "None"
+  },
+  {
+    "date": "2025-06-27",
     "time": "14h30",
     "title": "Oil Change",
     "client": "João M.",

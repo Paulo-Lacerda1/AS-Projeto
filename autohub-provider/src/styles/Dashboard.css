@@ -85,6 +85,26 @@
   margin: 0 auto;
 }
 
+.stat-box-star {
+    display: block;
+    text-decoration: none;
+    color: #222;
+    cursor: pointer;
+    border-radius: 13px;
+    padding-bottom: 5px;
+    padding-right: 20px;
+    padding-left: 20px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.stat-box-star:hover {
+    color: #ffffff;
+    background-color: #222;
+}
+.stat-box-star p:first-child {
+  font-size: 1.5rem;
+}
+
 .stat-box p:first-child {
   font-size: 1.5rem;
 }
@@ -128,6 +148,8 @@
     margin-top: 0.3rem;
     cursor: pointer;
     user-select: none;
+    background-color: #00000000;
+    border-color: #00000000;
 }
 
 .service-card h3 {
@@ -196,4 +218,53 @@ body {
   font-size: 1.1rem;
   letter-spacing: 2px;
   color: #111;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  font-family: 'Segoe UI', sans-serif;
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.3rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.modal-content button {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  border: 1px solid #767676;
+  border-radius: 5px;
+  background-color: #E3E3E3;
+  cursor: pointer;
 }
