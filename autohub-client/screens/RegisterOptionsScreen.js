@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Picker, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 export default function RegisterOptionsScreen({ navigation }) {
   const [accountType, setAccountType] = useState('User');

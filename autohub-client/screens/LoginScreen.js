@@ -5,16 +5,20 @@ import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MOCK_USER = {
+  firstName: 'Maria',
+  lastName: 'Santos',
   email: '',
-  password: ''
+  password: '',
+  confirm: '123456',
+  nif: '987654321',
+  phone: '912345678',
+  address: 'Rua das Flores, 45'
 };
-
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // podemos usar o AsyncStorage para armazenar dados localmente ou utilizar o mock
   const handleLogin = async () => {
     try {
       const storedUser = await AsyncStorage.getItem('user');
@@ -24,7 +28,9 @@ export default function LoginScreen({ navigation }) {
       const isStoredLogin = user && email === user.email && password === user.password;
 
       if (isMockLogin || isStoredLogin) {
-        navigation.navigate('Home');
+        const loggedUser = isMockLogin ? MOCK_USER : user;
+        await AsyncStorage.setItem('session', JSON.stringify(loggedUser));
+        navigation.navigate('Main', { screen: 'Home' });
       } else {
         Alert.alert('Erro', 'Email ou senha inválidos');
       }
@@ -33,6 +39,7 @@ export default function LoginScreen({ navigation }) {
       Alert.alert('Erro', 'Falha ao autenticar utilizador');
     }
   };
+
 
   return (
     <View style={styles.container}>

@@ -1,196 +1,330 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Button, FlatList } from 'react-native';
+// screens/BookingScreen.js
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Platform, Button, Dimensions, } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 
+const VEHICLE_TYPES = ['Small', 'Medium', 'Large'];
+const { width } = Dimensions.get('window');
+
 export default function BookingScreen({ route, navigation }) {
-    const { title, store } = route.params;
+    const { service } = route.params;
 
     const [date, setDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showTimePicker, setShowTimePicker] = useState(false);
-    const [vehicleType, setVehicleType] = useState('');
+    const [showDate, setShowDate] = useState(false);
+    const [showTime, setShowTime] = useState(false);
+    const [vehicle, setVehicle] = useState('');
     const [selectedExtras, setSelectedExtras] = useState([]);
-    const [confirmed, setConfirmed] = useState(false);
 
-    const extrasList = [
-        'Limpeza interior',
-        'Mudança de pneus',
-        'Check-up completo',
-        'Alinhamento de direção',
-        'Revisão de travões',
-    ];
+    const extrasTotal = selectedExtras.reduce((sum, ex) => sum + ex.price, 0);
+    const total = service.price + extrasTotal;
 
     const toggleExtra = (extra) => {
         setSelectedExtras((prev) =>
-            prev.includes(extra) ? prev.filter((e) => e !== extra) : [...prev, extra]
+            prev.includes(extra)
+                ? prev.filter((e) => e !== extra)
+                : [...prev, extra]
         );
     };
 
-    const handleConfirm = () => {
-
-        if (!vehicleType.trim()) {
-            Alert.alert('Erro', 'Por favor, indica o tipo de veículo.');
-            return;
-        }
-
+    const onConfirm = () => {
         navigation.navigate('BookingSummaryScreen', {
-            title,
-            store,
+            title: service.name,
+            store: service.store,
             date: date.toISOString(),
-            vehicleType,
+            vehicleType: vehicle,
             selectedExtras,
+            total,
         });
     };
 
-
     return (
+
         <View style={styles.container}>
-            <Text style={styles.heading}>Agendar Serviço</Text>
-            <Text style={styles.label}>Serviço: {title}</Text>
-            <Text style={styles.label}>Oficina: {store}</Text>
-
-            {/* Seletor de Data */}
-            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateInput}>
-                <Text>📅 {date.toLocaleDateString()}</Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-                <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                        setShowDatePicker(false);
-                        if (selectedDate) setDate(new Date(selectedDate.setHours(date.getHours(), date.getMinutes())));
-                    }}
+            <ScrollView contentContainerStyle={styles.content}>
+                {/* Header */}
+                <Image
+                    source={require('../assets/logo_transparente.png')}
+                    style={styles.logo}
                 />
-            )}
 
-            {/* Seletor de Hora */}
-            <TouchableOpacity onPress={() => setShowTimePicker(true)} style={styles.dateInput}>
-                <Text>⏰ {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-            </TouchableOpacity>
-            {showTimePicker && (
-                <DateTimePicker
-                    value={date}
-                    mode="time"
-                    display="default"
-                    onChange={(event, selectedTime) => {
-                        setShowTimePicker(false);
-                        if (selectedTime) {
-                            const updated = new Date(date);
-                            updated.setHours(selectedTime.getHours());
-                            updated.setMinutes(selectedTime.getMinutes());
-                            setDate(updated);
-                        }
-                    }}
-                />
-            )}
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={styles.navIcon}
+                >
+                    <Image
+                        source={require('../assets/arrowleft.png')}
+                        style={styles.backIcon}
+                    />
+                </TouchableOpacity>
 
-            {/* Tipo de Veículo */}
-            <TextInput
-                placeholder="Tipo de veículo (ex: SUV, Sedan, etc)"
-                style={styles.input}
-                value={vehicleType}
-                onChangeText={setVehicleType}
-            />
+                {/* Imagem e título */}
+                <Image source={service.image} style={styles.image} />
+                <Text style={styles.serviceName}>{service.name}</Text>
+                <Text style={styles.description}>{service.description}</Text>
 
-            {/* Extras */}
-            <Text style={[styles.label, { marginTop: 10 }]}>Extras:</Text>
-            <FlatList
-                data={extrasList}
-                keyExtractor={(item) => item}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={[
-                            styles.extraOption,
-                            selectedExtras.includes(item) && styles.extraOptionSelected,
-                        ]}
-                        onPress={() => toggleExtra(item)}
-                    >
-                        <Ionicons
-                            name={selectedExtras.includes(item) ? 'checkbox' : 'square-outline'}
-                            size={24}
-                            color={selectedExtras.includes(item) ? 'black' : '#aaa'}
-                        />
-                        <Text style={styles.extraText}>{item}</Text>
-                    </TouchableOpacity>
+              <View style={styles.row}>
+                <Text style={styles.label}>Select date</Text>
+                {Platform.OS === 'web' ? (
+                    <input
+                        type="date"
+                        value={date.toISOString().split('T')[0]}
+                        onChange={(e) => {
+                            const selectedDate = new Date(e.target.value);
+                            selectedDate.setHours(date.getHours(), date.getMinutes());
+                            setDate(selectedDate);
+                        }}
+                        style={{
+                            flex: 1,
+                            padding: 10,
+                            backgroundColor: '#eee',
+                            borderRadius: 5,
+                            textAlign: 'right',
+                        }}
+                    />
+                ) : (
+                        <>
+                            <TouchableOpacity
+                                style={styles.input}
+                                onPress={() => setShowDate(true)}
+                            >
+                                <Text>{date.toLocaleDateString()}</Text>
+                            </TouchableOpacity>
+                            {showDate && (
+                                <DateTimePicker
+                                    value={date}
+                                    mode="date"
+                                    display={Platform.OS === 'android' ? 'calendar' : 'default'}
+                                    onChange={(e, d) => {
+                                        setShowDate(Platform.OS === 'ios');
+                                        if (d) {
+                                            const nd = new Date(d);
+                                            nd.setHours(date.getHours(), date.getMinutes());
+                                            setDate(nd);
+                                        }
+                                    }}
+                                />
+                            )}
+                        </>
+                    )}
+            </View>
+
+
+                {/* Hora */}
+                <View style={styles.row}>
+                <Text style={styles.label}>Select time</Text>
+                {Platform.OS === 'web' ? (
+                    <input
+                        type="time"
+                        value={date.toTimeString().substring(0, 5)}
+                        onChange={(e) => {
+                            const [hours, minutes] = e.target.value.split(':');
+                            const newDate = new Date(date);
+                            newDate.setHours(+hours);
+                            newDate.setMinutes(+minutes);
+                            setDate(newDate);
+                        }}
+                        style={{
+                            flex: 1,
+                            padding: 10,
+                            backgroundColor: '#eee',
+                            borderRadius: 5,
+                            textAlign: 'right',
+                        }}
+                    />
+                ) : (
+                    <>
+                        <TouchableOpacity
+                            style={styles.input}
+                            onPress={() => setShowTime(true)}
+                        >
+                            <Text>
+                                {date.toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                })}
+                            </Text>
+                        </TouchableOpacity>
+                        {showTime && (
+                            <DateTimePicker
+                                value={date}
+                                mode="time"
+                                display="default"
+                                onChange={(e, d) => {
+                                    setShowTime(Platform.OS === 'ios');
+                                    if (d) {
+                                        const nd = new Date(date);
+                                        nd.setHours(d.getHours(), d.getMinutes());
+                                        setDate(nd);
+                                    }
+                                }}
+                            />
+                        )}
+                    </>
                 )}
-            />
+            </View>
 
-            <TouchableOpacity style={styles.blackButton} onPress={handleConfirm}>
-                <Text style={styles.blackButtonText}>Ver Resumo</Text>
-            </TouchableOpacity>
 
+                {/* Dropdown de Tipo de veículo */}
+                <Text style={styles.label}>Vehicle type</Text>
+                <View style={styles.pickerContainer}>
+                    <Picker
+                        selectedValue={vehicle}
+                        onValueChange={(val) => setVehicle(val)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Select vehicle type..." value="" />
+                        {VEHICLE_TYPES.map((type) => (
+                            <Picker.Item key={type} label={type} value={type} />
+                        ))}
+                    </Picker>
+                </View>
+
+                {/* Extras */}
+                <Text style={[styles.label, { marginTop: 20 }]}>Extras</Text>
+                {service.extras.map((ex) => {
+                    const isSelected = selectedExtras.includes(ex);
+                    return (
+                        <TouchableOpacity
+                            key={ex.label}
+                            style={[styles.option, isSelected && styles.optionSelected]}
+                            onPress={() => toggleExtra(ex)}
+                        >
+                            <Text style={isSelected ? styles.optionTextSelected : styles.optionText}>
+                                {ex.label} (+{ex.price}€)
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
+
+                {/* Espaço extra para não colidir com o footer */}
+                <View style={{ height: 100 }} />
+            </ScrollView>
+
+            {/* Footer fixo */}
+            <View style={styles.footer}>
+                <Text style={styles.totalText}>Total: {total.toFixed(2)}€</Text>
+                <TouchableOpacity
+                    style={[
+                        styles.confirmButton,
+                        !(vehicle && date) && { backgroundColor: '#888' },
+                    ]}
+                    disabled={!vehicle}
+                    onPress={onConfirm}
+                >
+                    <Text style={styles.confirmText}>Confirm reservation</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#fff'
     },
-    heading: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 20,
+    content: {
+        padding: 20,
+        paddingBottom: 0
     },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
+    logo: {
+        width: 180,
+        height: 80,
+        resizeMode: 'contain',
+        alignSelf: 'center',
+        marginBottom: 10
     },
-    dateInput: {
-        padding: 10,
-        fontSize: 16,
-        backgroundColor: '#eee',
-        borderRadius: 5,
-        marginBottom: 10,
+    navIcon: {
+        position: 'absolute',
+        top: 30,
+        left: 20
     },
-    input: {
-        padding: 10,
-        fontSize: 16,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginBottom: 10,
+    backIcon: {
+        width: 24,
+        height: 24
     },
-    blackButton: {
-        backgroundColor: '#000',
-        padding: 12,
-        borderRadius: 5,
-        alignItems: 'center',
+    image: {
+        width: '100%',
+        height: 200,
+        borderRadius: 8,
+        marginBottom: 10
     },
-    blackButtonText: {
-        color: '#fff',
-        fontSize: 16,
+    serviceName: {
+        fontSize: 20,
+        fontWeight: 'bold'
     },
-    extraOption: {
+    description: {
+        fontSize: 14,
+        color: '#333',
+        marginBottom: 20
+    },
+    row: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 8,
+        marginBottom: 15
     },
-    extraOptionSelected: {
-        backgroundColor: '#f2f2f2',
+    label: {
+        flex: 1,
+        fontWeight: '600'
+    },
+    input: {
+        flex: 1,
+        padding: 10,
+        backgroundColor: '#eee',
         borderRadius: 5,
-        padding: 5,
+        alignItems: 'flex-end',
     },
-    extraText: {
-        marginLeft: 10,
-        fontSize: 16,
+    pickerContainer: {
+        backgroundColor: '#eee',
+        borderRadius: 5,
+        marginVertical: 10,
     },
-    summary: {
-        marginTop: 30,
+    picker: {
+        height: 50,
+        width: '100%',
+        padding: 10,
+    },
+    option: {
+        padding: 10,
+        backgroundColor: '#eee',
+        borderRadius: 5,
+        marginVertical: 5
+    },
+    optionSelected: {
+        backgroundColor: '#333'
+    },
+    optionText: {
+        color: '#000'
+    },
+    optionTextSelected: {
+        color: '#fff'
+    },
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        width,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: '#fff',
         padding: 15,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        backgroundColor: '#f9f9f9',
+        borderTopWidth: 1,
+        borderColor: '#ddd',
     },
-    summaryTitle: {
+    totalText: {
         fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
+        fontWeight: 'bold'
+    },
+    confirmButton: {
+        backgroundColor: '#000',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    confirmText: {
+        color: '#fff',
+        fontWeight: '600',
     },
 });
