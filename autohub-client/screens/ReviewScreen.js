@@ -1,122 +1,177 @@
-// screens/ReviewScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    TextInput,
+    Alert,
+} from 'react-native';
 
 export default function ReviewScreen({ route, navigation }) {
-  // Agora recebemos title e date também
-  const { store, title, date } = route.params;
-  const [rating, setRating] = useState('');
-  const [comment, setComment] = useState('');
+    const { booking } = route.params;
+    const [reviewText, setReviewText] = useState('');
+    const [rating, setRating] = useState(0);
 
-  const handleSubmit = async () => {
-    // Validação da nota
-    if (!rating || isNaN(rating) || rating < 1 || rating > 5) {
-      Alert.alert('Erro', 'A avaliação deve ser um número entre 1 e 5.');
-      return;
-    }
+    const submitReview = async () => {
+        if (!rating || !reviewText.trim()) {
+            Alert.alert('Incomplete', 'Please provide a rating and a comment.');
+            return;
+        }
 
-    // Monta o objeto de review
-    const newReview = {
-      store,
-      title,
-      rating: Number(rating),
-      comment,
-      date: new Date().toISOString(),
+        try {
+            const stored = await AsyncStorage.getItem('bookings');
+            const all = stored ? JSON.parse(stored) : [];
+
+            const index = all.findIndex(b =>
+                b.title === booking.title &&
+                b.date === booking.date &&
+                b.store === booking.store
+            );
+
+            if (index === -1) throw new Error('Booking not found');
+
+            all[index] = {
+                ...all[index],
+                completed: true,
+                review: {
+                    id: Date.now(), // identificador único
+                    rating,
+                    title: booking.title,
+                    text: reviewText.trim(),
+                    user: booking.user || 'Anonymous', // ajusta conforme necessário
+                    date: new Date().toLocaleDateString(),
+                },
+            };
+
+            await AsyncStorage.setItem('bookings', JSON.stringify(all));
+
+            Alert.alert('Thank you!', 'Your review has been submitted.');
+            navigation.navigate('Home');
+        } catch (e) {
+            console.error(e);
+            Alert.alert('Error', 'Could not save your review.');
+        }
     };
 
-    try {
-      // 1) Salvar a review
-      const storedReviews = await AsyncStorage.getItem('reviews');
-      const reviews = storedReviews ? JSON.parse(storedReviews) : [];
-      reviews.push(newReview);
-      await AsyncStorage.setItem('reviews', JSON.stringify(reviews));
+    return (
+        <View style={styles.container}>
+            {/* Header fixo */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.navIcon}>
+                    <Image source={require('../assets/arrowleft.png')} style={styles.backIcon} />
+                </TouchableOpacity>
+                <Image source={require('../assets/logo_transparente.png')} style={styles.logo} />
+            </View>
 
-      // 2) Marcar o booking como completed
-      const storedBookings = await AsyncStorage.getItem('bookings');
-      let bookings = storedBookings ? JSON.parse(storedBookings) : [];
+            {/* Conteúdo */}
+            <View style={styles.content}>
+                <Text style={styles.title}>Rate your experience with:</Text>
+                <Text style={styles.bookingInfo}>{booking.title} @ {booking.store}</Text>
 
-      const targetTime = new Date(date).getTime();
-      bookings = bookings.map(b => {
-        if (
-          b.store === store &&
-          b.title === title &&
-          new Date(b.date).getTime() === targetTime
-        ) {
-          return { ...b, completed: true };
-        }
-        return b;
-      });
+                {/* Estrelas */}
+                <View style={styles.starsContainer}>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <TouchableOpacity key={i} onPress={() => setRating(i)}>
+                            <Text style={styles.star}>{rating >= i ? '⭐' : '☆'}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
 
-      await AsyncStorage.setItem('bookings', JSON.stringify(bookings));
+                {/* Input de texto */}
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="Write your feedback..."
+                    multiline
+                    numberOfLines={4}
+                    value={reviewText}
+                    onChangeText={setReviewText}
+                />
 
-      // Feedback e volta à Home
-      Alert.alert('Avaliação enviada!', 'Obrigado pela sua avaliação.');
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error('Erro ao salvar avaliação:', error);
-      Alert.alert('Erro', 'Não foi possível salvar a avaliação.');
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Avalie o serviço em {store}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nota (1 a 5)"
-        keyboardType="numeric"
-        value={rating}
-        onChangeText={setRating}
-      />
-      <TextInput
-        style={[styles.input, styles.comment]}
-        placeholder="Deixe um comentário (opcional)"
-        multiline
-        numberOfLines={4}
-        value={comment}
-        onChangeText={setComment}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Enviar Avaliação</Text>
-      </TouchableOpacity>
-    </View>
-  );
+                {/* Botão */}
+                <TouchableOpacity style={styles.submitButton} onPress={submitReview}>
+                    <Text style={styles.submitButtonText}>Submit Review</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  comment: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  button: {
-    backgroundColor: '#000',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop: 50,
+        paddingHorizontal: 15,
+        paddingBottom: 10,
+        borderBottomWidth: 1,
+        borderColor: '#ddd',
+        backgroundColor: '#fff',
+    },
+    navIcon: {
+        paddingRight: 10,
+    },
+    backIcon: {
+        width: 24,
+        height: 24,
+        resizeMode: 'contain',
+    },
+    logo: {
+        width: 150,
+        height: 50,
+        resizeMode: 'contain',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+    },
+    content: {
+        flex: 1,
+        padding: 20,
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 10,
+    },
+    bookingInfo: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 20,
+    },
+    starsContainer: {
+        flexDirection: 'row',
+        marginBottom: 20,
+    },
+    star: {
+        fontSize: 32,
+        marginHorizontal: 5,
+    },
+    textInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        padding: 10,
+        width: '100%',
+        minHeight: 100,
+        textAlignVertical: 'top',
+        marginBottom: 20,
+    },
+    submitButton: {
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        width: '100%',
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 16,
+    },
 });

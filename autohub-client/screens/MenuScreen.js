@@ -12,7 +12,7 @@ export default function MenuScreen() {
     { label: 'Scheduled services', icon: require('../assets/menu_icons/calendar.png') },
     { label: 'Payments', icon: require('../assets/menu_icons/payments.png') },
     { label: 'Favorites', icon: require('../assets/menu_icons/favorites.png') },
-    { label: 'Historic', icon: require('../assets/menu_icons/historic.png') },
+    { label: 'Historic', icon: require('../assets/menu_icons/historic.png'), screen: 'Historic' },
     { label: 'Help', icon: require('../assets/menu_icons/help.png') },
     { label: 'Logout', icon: require('../assets/menu_icons/logout.png'), screen: 'Login' }
   ];
