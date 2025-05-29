@@ -14,7 +14,7 @@ export default function HomeScreen() {
       title,
       store,
       description,
-      image,w
+      image,
     });
   };
 
