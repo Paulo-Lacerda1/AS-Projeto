@@ -1,0 +1,44 @@
+.provider-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.provider-container h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.provider-container form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.provider-container input,
+.provider-container select,
+.provider-container textarea {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.provider-container button {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.provider-container button:hover {
+  background-color: #3a3a3a;
+}
