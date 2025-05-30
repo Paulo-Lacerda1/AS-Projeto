@@ -46,16 +46,11 @@ export default function Login() {
         </form>
 
         <div className="links-container">
-          <Link to="/forgot-password">Forgot password?</Link>
+          <Link to="/">Forgot password?</Link>
           <Link to="/provider-signup">Sign up</Link>
         </div>
 
-        <div
-          className="avaliacao-card"
-          onClick={() => navigate('/avaliacao')}
-        >
-          Avaliação
-        </div>
+        
       </div>
     </div>
   );

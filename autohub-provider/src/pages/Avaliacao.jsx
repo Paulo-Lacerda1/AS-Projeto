@@ -59,28 +59,26 @@ const Avaliacao = () => {
   const avaliacoesVisiveis = mostrarTodas ? avaliacoes : avaliacoes.slice(0, 10);
 
   return (
-    <div className="pagina-avaliacoes">
+  <div className="pagina-avaliacoes">
+    <div className="avaliacoes-wrapper">
       <header className="topo">
-      <img src={logo} alt="Logo AutoHub" className="logo" />
-      
-      <div className="titulos">
-        <h1>Avaliações dos Clientes</h1>
-        <h3>Thompson Car Services</h3>
-      </div>
-      
-      <img src={logoThompson} alt="Logo Thompson Car Services" className="logo-thompson" />
-    </header>
+        <img src={logo} alt="Logo AutoHub" className="logo" />
+        <div className="titulos">
+          <h1>Avaliações dos Clientes</h1>
+          <h3>Thompson Car Services</h3>
+        </div>
+        <img src={logoThompson} alt="Logo Thompson Car Services" className="logo-thompson" />
+      </header>
 
       <main className="conteudo">
         <section className="estatisticas">
           <div className="media">
-               <div className="media-valor-estrelas">
-             <h2>{media}</h2>
-                 <Estrelas valor={parseFloat(media)} />
-                </div>
-                   <p>Média Geral</p>
-                </div>
-
+            <div className="media-valor-estrelas">
+              <h2>{media}</h2>
+              <Estrelas valor={parseFloat(media)} />
+            </div>
+            <p>Média Geral</p>
+          </div>
 
           <div className="barra-avaliacoes">
             {[5, 4, 3, 2, 1].map((n) => (
@@ -120,7 +118,7 @@ const Avaliacao = () => {
         </section>
       </main>
     </div>
-  );
-};
-
+  </div>
+);
+}
 export default Avaliacao;

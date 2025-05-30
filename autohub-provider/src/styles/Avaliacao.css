@@ -1,10 +1,23 @@
+.avaliacoes-wrapper {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
 .pagina-avaliacoes {
   min-height: 100vh;
-  background: linear-gradient(to right, #f5f7fa, #e4ecf4);
+  background-color: #f0f2f5;
   font-family: 'Segoe UI', sans-serif;
   padding: 2rem;
   color: #222;
+  box-sizing: border-box;
 }
+
 
 /* Topo ajustado para 3 itens: logo AutoHub, títulos e logo Thompson */
 .topo {
@@ -53,7 +66,7 @@
 }
 
 .estatisticas {
-  background: white;
+  background: rgb(252, 252, 252);
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -106,10 +119,10 @@
 }
 
 .cartao {
-  background: white;
+  background: rgb(251, 251, 251);
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(128, 81, 81, 0.1);
+  box-shadow: 0 1px 4px rgba(247, 255, 250, 0.1);
   display: flex;
   gap: 1rem;
   align-items: flex-start;

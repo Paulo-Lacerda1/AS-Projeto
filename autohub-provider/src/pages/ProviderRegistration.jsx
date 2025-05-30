@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
-import '../styles/ProviderRegistration.css'; // Certifica-te que este caminho está correto
+import { useNavigate } from 'react-router-dom';
+import { IoArrowBack } from 'react-icons/io5';
+import '../styles/ProviderRegistration.css';
+import logo from '../assets/logo_transparente.png';
 
 const ProviderRegistration = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    companyName: '',
+    businessName: '',
     email: '',
-    serviceType: '',
+    password: '',
+    confirmPassword: '',
+    nif: '',
     phone: '',
     address: '',
-    description: '',
+    role: 'Service Provider',
   });
 
   const handleChange = (e) => {
@@ -17,72 +24,94 @@ const ProviderRegistration = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Dados registados:', formData);
-    // Aqui podes fazer fetch/post para o backend
-  };
+  e.preventDefault();
+  console.log('Dados registados:', formData);
+
+  // Redireciona para confirmação de email
+  navigate('/email-confirmation');
+};
 
   return (
-    <div className="provider-container">
-      <h1>Registar Provedor de Serviços</h1>
-      <form onSubmit={handleSubmit}>
-        <label>Nome da Empresa</label>
-        <input
-          name="companyName"
-          value={formData.companyName}
-          onChange={handleChange}
-          required
-        />
+    <React.Fragment>
+      <div className="provider-container">
+        <img src={logo} alt="AutoHub Logo" className="logo" />
 
-        <label>Email</label>
-        <input
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
+        <div className="header">
+          <div className="back-button" onClick={() => navigate('/')}>
+            <IoArrowBack size={24} />
+          </div>
+          <h1>Criar conta</h1>
+        </div>
 
-        <label>Tipo de Serviço</label>
-        <select
-          name="serviceType"
-          value={formData.serviceType}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Selecione</option>
-          <option value="transporte">Transporte</option>
-          <option value="logistica">Logística</option>
-          <option value="manutencao">Manutenção</option>
-          <option value="outro">Outro</option>
-        </select>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="role">Registar como</label>
+          <p className="description">
+            Registe a sua oficina ou centro de serviços para oferecer serviços na plataforma AutoHub.
+          </p>
+          <select name="role" value={formData.role} onChange={handleChange}>
+            <option value="Service Provider">Service Provider</option>
+          </select>
 
-        <label>Telefone</label>
-        <input
-          name="phone"
-          type="tel"
-          value={formData.phone}
-          onChange={handleChange}
-        />
+          <label>Business Name</label>
+          <input
+            name="businessName"
+            value={formData.businessName}
+            onChange={handleChange}
+            required
+          />
 
-        <label>Endereço</label>
-        <input
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-        />
+          <label>Email</label>
+          <input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
 
-        <label>Descrição</label>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          rows={4}
-        />
+          <label>Password</label>
+          <input
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
 
-        <button type="submit">Registar</button>
-      </form>
-    </div>
+          <label>Confirm password</label>
+          <input
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+
+          <label>NIF</label>
+          <input
+            name="nif"
+            value={formData.nif}
+            onChange={handleChange}
+          />
+
+          <label>Phone Number</label>
+          <input
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+
+          <label>Address</label>
+          <input
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+          />
+
+          <button type="submit">Register</button>
+        </form>
+      </div>
+    </React.Fragment>
   );
 };
 
