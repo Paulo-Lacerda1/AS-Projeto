@@ -44,7 +44,6 @@ const ProviderRegistration = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="role">Registar como</label>
           <p className="description">
             Registe a sua oficina ou centro de serviços para oferecer serviços na plataforma AutoHub.
           </p>
