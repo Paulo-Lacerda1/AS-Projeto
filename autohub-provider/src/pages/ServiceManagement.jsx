@@ -26,11 +26,16 @@ export default function AppointmentCalendar() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const [appointmentEditing, setAppointmentEditing] = useState(null);
+    const [companyName, setCompanyName] = useState('');
 
     useEffect(() => {
         fetch(`/data/${company}/appointments.json`).then(res => res.json()).then(setAppointments);
         fetch(`/data/${company}/services.json`).then(res => res.json()).then(setServices);
         fetch(`/data/${company}/stats.json`).then(res => res.json()).then(setStats);
+        fetch('/data/companies.json').then(res => res.json()).then(companies => {
+            const found = companies.find(c => c.param === company);
+            if (found) setCompanyName(found.name);
+        })
     }, [company]);
 
     const today = new Date();
@@ -197,7 +202,7 @@ export default function AppointmentCalendar() {
                 </div>
                 <div className="company-info">
                     <div className="company-text">
-                        <span className="company-name">{company} Car Service</span>
+                        <span className="company-name">{companyName}</span>
                         <div className="stars">{renderStars(stats.stars)}</div>
                     </div>
                     <Link to={`/dashboard/${company}`}>
