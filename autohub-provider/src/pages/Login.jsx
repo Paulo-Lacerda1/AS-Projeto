@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Login.css';
 import logo from '../assets/logo_transparente.png';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Ícones
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -21,6 +22,7 @@ export default function Login() {
       );
 
       if (company) {
+        setError('');
         navigate(`/dashboard/${company.param}`);
       } else {
         setError('Invalid email or password');
@@ -35,6 +37,13 @@ export default function Login() {
     <div className="login-container">
       <div className="login-box">
         <img src={logo} alt="AutoHub Logo" className="login-logo" />
+
+        {error && (
+          <div className="error-box">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -49,25 +58,34 @@ export default function Login() {
           </div>
 
           <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <div className="password-wrapper">
-            <input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Value"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="toggle-password"
-            >
-              {showPassword ? 'Hide' : 'Show'}
-            </span>
+            <label htmlFor="password">Password</label>
+            <div className="password-wrapper">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Value"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="toggle-password"
+              >
+                {showPassword ? (
+                  <>
+                    <FaEyeSlash style={{ marginRight: '5px' }} />
+                    Hide
+                  </>
+                ) : (
+                  <>
+                    <FaEye style={{ marginRight: '5px' }} />
+                    Show
+                  </>
+                )}
+              </span>
             </div>
-        </div>
-
+          </div>
 
           <button type="submit">Sign in</button>
         </form>
