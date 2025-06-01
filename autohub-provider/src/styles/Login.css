@@ -66,6 +66,7 @@
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
+
 .avaliacao-card {
   width: 100%;
   max-width: 200px;
@@ -85,5 +86,31 @@
 
 .avaliacao-card:hover {
   background-color: #3a3a3a;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input,
+.login-box input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  padding-right: 60px; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #333;
+  user-select: none;
 }
 

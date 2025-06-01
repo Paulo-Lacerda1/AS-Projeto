@@ -6,6 +6,7 @@ import logo from '../assets/logo_transparente.png';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ export default function Login() {
 
       const company = companies.find(
         (c) => c.email === email && c.password === password
-      );      
+      );
 
       if (company) {
         navigate(`/dashboard/${company.param}`);
@@ -48,16 +49,25 @@ export default function Login() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+          <label htmlFor="password">Password</label>
+          <div className="password-wrapper">
             <input
               id="password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="Value"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </div>
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="toggle-password"
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </span>
+            </div>
+        </div>
+
 
           <button type="submit">Sign in</button>
         </form>
@@ -66,8 +76,6 @@ export default function Login() {
           <Link to="/">Forgot password?</Link>
           <Link to="/provider-signup">Sign up</Link>
         </div>
-
-        
       </div>
     </div>
   );
