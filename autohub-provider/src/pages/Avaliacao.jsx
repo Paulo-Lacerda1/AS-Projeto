@@ -1,52 +1,82 @@
 import React, { useState } from 'react';
 import '../styles/Avaliacao.css';
 import logo from '../assets/logo_transparente.png';
+import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
+import logoThompson from '../assets/logo_thompson.png';
+
 
 const avaliacoes = [
   { nome: 'João Santos', comentario: 'Serviço excelente!', nota: 5 },
-  { nome: 'Maria Ferreira', comentario: 'Atendimento rápido e eficiente.', nota: 4 },
+  { nome: 'Maria Ferreira', comentario: 'Atendimento rápido e eficiente.', nota: 5 },
   { nome: 'Carlos Lima', comentario: 'Recomendo vivamente!', nota: 5 },
-  { nome: 'Ana Costa', comentario: 'Bom, mas podia ser melhor.', nota: 3 },
-  { nome: 'Rui Silva', comentario: 'Muito simpáticos e profissionais.', nota: 4 },
+  { nome: 'Ana Costa', comentario: 'Bom, mas podia ser melhor.', nota: 4 },
+  { nome: 'Rui Silva', comentario: 'Muito simpáticos e profissionais.', nota: 5 },
   { nome: 'Paula Marques', comentario: 'Adorei a limpeza.', nota: 5 },
-  { nome: 'André Lourenço', comentario: 'Poderia ter sido mais rápido.', nota: 3 },
+  { nome: 'André Lourenço', comentario: 'Poderia ter sido mais rápido.', nota: 4 },
   { nome: 'Bruno Almeida', comentario: 'Atendimento impecável!', nota: 5 },
-  { nome: 'Inês Moreira', comentario: 'Serviço razoável, pode melhorar.', nota: 3 },
+  { nome: 'Inês Moreira', comentario: 'Serviço razoável, pode melhorar.', nota: 4 },
   { nome: 'Miguel Pinto', comentario: 'Rapidez e qualidade, recomendo.', nota: 5 },
   { nome: 'Helena Duarte', comentario: 'Nada a apontar, voltarei de certeza.', nota: 5 },
-  { nome: 'Tiago Fonseca', comentario: 'Demorou mais do que o previsto.', nota: 2 },
+  { nome: 'Tiago Fonseca', comentario: 'Demorou mais do que o previsto.', nota: 3 }, // compensada
   { nome: 'Sofia Ramos', comentario: 'Profissionais muito competentes.', nota: 5 },
-  { nome: 'Pedro Martins', comentario: 'Bom serviço pelo preço pago.', nota: 4 },
+  { nome: 'Pedro Martins', comentario: 'Bom serviço pelo preço pago.', nota: 5 },
   { nome: 'Catarina Neves', comentario: 'Superou minhas expectativas!', nota: 5 },
   { nome: 'Diana Cardoso', comentario: 'Atendimento perfeito, 5 estrelas!', nota: 5 },
-  { nome: 'João Miguel', comentario: 'Tinha mais expectativas do serviço', nota: 2 },
+  { nome: 'João Miguel', comentario: 'Tinha mais expectativas do serviço', nota: 3 }, // compensada
   { nome: 'Ricardo Teixeira', comentario: 'Satisfeito com o resultado.', nota: 4 },
   { nome: 'Beatriz Gomes', comentario: 'Não tenho queixas, muito bom.', nota: 5 },
-  { nome: 'Gonçalo Castro', comentario: 'Serviço mediano, esperava mais.', nota: 4 },
+  { nome: 'Hugo Fernandes', comentario: 'Não gostei do atendimento.', nota: 2 } // avaliação com nota 2
 ];
 
+
+
 const total = avaliacoes.length;
-const media = (
-  avaliacoes.reduce((acc, curr) => acc + curr.nota, 0) / total
-).toFixed(1);
+const media = Number(
+  (avaliacoes.reduce((acc, curr) => acc + curr.nota, 0) / total).toFixed(1)
+);
+
 
 const contarNotas = (n) => avaliacoes.filter((a) => a.nota === n).length;
+
+const Estrelas = ({ valor }) => {
+  const estrelas = [];
+
+  for (let i = 1; i <= 5; i++) {
+    if (valor >= i) {
+      estrelas.push(<FaStar key={i} />);
+    } else if (valor >= i - 0.5) {
+      estrelas.push(<FaStarHalfAlt key={i} />);
+    } else {
+      estrelas.push(<FaRegStar key={i} />);
+    }
+  }
+
+  return <div className="estrelas">{estrelas}</div>;
+};
 
 const Avaliacao = () => {
   const [mostrarTodas, setMostrarTodas] = useState(false);
   const avaliacoesVisiveis = mostrarTodas ? avaliacoes : avaliacoes.slice(0, 10);
 
   return (
-    <div className="pagina-avaliacoes">
+  <div className="pagina-avaliacoes">
+    <div className="avaliacoes-wrapper">
       <header className="topo">
         <img src={logo} alt="Logo AutoHub" className="logo" />
-        <h1>Avaliações dos Clientes</h1>
+        <div className="titulos">
+          <h1>Avaliações dos Clientes</h1>
+          <h3>Thompson Car Services</h3>
+        </div>
+        <img src={logoThompson} alt="Logo Thompson Car Services" className="logo-thompson" />
       </header>
 
       <main className="conteudo">
         <section className="estatisticas">
           <div className="media">
-            <h2>{media}</h2>
+            <div className="media-valor-estrelas">
+              <h2>{media}</h2>
+              <Estrelas valor={parseFloat(media)} />
+            </div>
             <p>Média Geral</p>
           </div>
 
@@ -79,8 +109,8 @@ const Avaliacao = () => {
               </div>
             ))}
           </div>
-          <button 
-            className="botao-ver-mais" 
+          <button
+            className="botao-ver-mais"
             onClick={() => setMostrarTodas(!mostrarTodas)}
           >
             {mostrarTodas ? 'Ver menos' : 'Ver mais'}
@@ -88,7 +118,7 @@ const Avaliacao = () => {
         </section>
       </main>
     </div>
-  );
-};
-
+  </div>
+);
+}
 export default Avaliacao;
