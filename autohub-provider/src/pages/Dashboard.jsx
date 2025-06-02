@@ -59,13 +59,24 @@ export default function Dashboard() {
     }
 
     function saveChanges() {
-        setServices(prevServices =>
-            prevServices.map(s =>
-                s.title === serviceEditing.title ? editService : s
-            )
-        );
+        if (serviceEditing) {
+            setServices(prevServices =>
+                prevServices.map(s =>
+                    s.title === serviceEditing.title ? editService : s
+                )
+            );
+        } else {
+            setServices(prev => [...prev, editService]);
+        }
 
         closeModal();
+    }
+
+    function deleteService() {
+        if (serviceEditing) {
+            setServices(prev => prev.filter(s => s.title !== serviceEditing.title));
+            closeModal();
+        }
     }
 
     function closeModal() {
@@ -142,6 +153,13 @@ export default function Dashboard() {
 
                 <section className="services-section">
                     <h2>Your Services</h2>
+                    <button className='add-service-btn' onClick={() => {
+                        setEditService({ title: '', price: '', duration: '', details: '' });
+                        setServiceEditing(null);
+                        setModalOpen(true);
+                    }}>
+                        Add Service
+                    </button>
                     <div className="services-grid">
                     {services.map((s, i) => (
                         <div key={i} className="service-card">
@@ -204,6 +222,11 @@ export default function Dashboard() {
                         </label>
                         <button onClick={saveChanges}>Save</button>
                         <button onClick={closeModal}>Close</button>
+                        {serviceEditing && (
+                            <button onClick={deleteService} style={{ backgroundColor: 'red', color: 'white' }}>
+                                Delete
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
