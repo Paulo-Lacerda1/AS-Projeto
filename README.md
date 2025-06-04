@@ -1,27 +1,86 @@
-# Análise de Sistemas - Grupo II
+# AutoHub – Serviços Automóveis
 
-## AutoHub
+## Projeto de Análise de Sistemas – Grupo II
 
-Lista de tarefas disponível em: https://trello.com/invite/b/681dce7d86da97f346fb6042/ATTIc82e06ddcd049043bf21c3af61e5b73cD2EE4283/autohub-implementation
+### Equipa
 
-## Versão Web  
-A versão web da aplicação foi desenvolvida em **React** com o **Vite**.
+- Rui Albuquerque – 110509  
+- Ellen Sales – 117450  
+- João Leite – 119859  
+- Paulo Lacerda – 120202  
 
-### Comandos para instalar
+---
 
-1. 
-   ```bash
-   npm create vite@latest autohub-provider -- --template react
-   ```
+## 📌 Descrição
 
-2. 
-   ```bash
-   cd autohub-provider
-   ```
+O AutoHub é uma aplicação web e mobile destinada à gestão de serviços automóveis, ligando clientes e prestadores de serviço (oficinas). O sistema permite:
 
-3. 
-   ```bash
-   npm install
-   ```
+- Registo e autenticação de utilizadores (clientes e prestadores)
+- Pesquisa e filtragem de serviços
+- Agendamento de serviços
+- Sistema de avaliações e feedback
 
-OBS: No primeiro comando eu escolhi a opcção " JavaScript "
+Neste incremento foi validada a arquitetura base, com comunicação entre plataformas simulada via API e dados armazenados em `LocalStorage`, prevendo futura ligação a uma base de dados real.
+
+---
+
+## 📁 Estrutura da Aplicação
+
+- **Frontend Web (Prestadores):** React + Vite  
+- **Frontend Mobile (Clientes):** React (adaptado para mobile)  
+- **Persistência Temporária:** LocalStorage  
+- **Comunicação:** Simulação de API RESTful
+
+---
+
+## 🌐 Acesso às Aplicações
+
+- **Versão Web (Prestadores):** https://autohub-provider.vercel.app  
+- **Versão Mobile (Clientes):** https://autohub-client.vercel.app  
+> 💡 Para melhor visualização da versão mobile, usar modo mobile nas DevTools do navegador.
+
+---
+
+## 📌 Requisitos
+
+- Node.js (v18 ou superior)
+- npm
+
+---
+
+## ✅ Funcionalidades Implementadas
+
+- Registo e login de utilizadores (clientes e prestadores)
+- Pesquisa e filtragem de serviços
+- Agendamento de serviços
+- Sistema de avaliação e feedback
+- Gestão de serviços (prestador)
+- Gestão de agendamentos (prestador)
+
+---
+
+## 📌 Planeamento
+
+- **Trello Board:** https://trello.com/b/PaiDUG2V/autohub-implementation
+
+---
+
+## 📄 Relatório
+
+O relatório detalhado encontra-se em `relatorio.pdf` e inclui:
+
+- Backlog com user stories selecionadas
+- Critérios de aceitação por tipo de utilizador
+- Estratégia de desenvolvimento (Kanban + GitHub)
+- Explicação da arquitetura e simulação da API
+- Diagrama de sequência de agendamento
+
+---
+
+## 🛠️ Futuras Melhorias
+
+- Substituição do LocalStorage por base de dados real (Firebase ou PostgreSQL)
+- Backend real com autenticação e persistência
+- Integração com serviços externos (emails, notificações)
+
+---
