@@ -35,7 +35,10 @@ Neste incremento foi validada a arquitetura base, com comunicação entre plataf
 
 ## 🌐 Acesso às Aplicações
 
-- **Versão Web (Prestadores):** https://autohub-provider.vercel.app  
+- **Versão Web (Prestadores):** https://autohub-provider.vercel.app
+#### Para entrares na aplicação, utiliza as seguintes credenciais:
+Email: thompson@gmail.com
+Password: thompson@password 
 - **Versão Mobile (Clientes):** https://autohub-client.vercel.app  
 > 💡 Para melhor visualização da versão mobile, usar modo mobile nas DevTools do navegador.
 
